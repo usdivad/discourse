@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>DisCourse Chat Window</title>
+<h1>Welcome to DisCourse!</h1>
+<!--<link rel="stylesheet" type="text/css" href="style.css">-->
+
+<style>
+
+html {
+background-color:#945800;
+}
+head, body {
+/*background-color:#b0c4de;*/
+background-color:#8bb4cf;
+width:900px;
+height:700px;
+margin-top:0px;
+margin-bottom:-10px;
+margin-left:auto;
+margin-right:auto;
+padding:20px;
+color: #1c2b46;
+}
+
+
+h1 {
+text-align:center;
+}
+#top {
+background-color:#f0f6ff;
+width:400px;
+text-align:center;
+/*position: fixed;
+top:100px;
+left:565px;*/
+margin-left:auto;
+margin-right:auto;
+}
+
+#messages {
+
+background-color:#fffcd6;
+width:600px;
+height:400px;
+overflow:scroll;
+margin-top:20px;
+margin-left:auto;
+margin-right:auto;
+}
+
+#inputdiv {
+margin-top:5px;
+margin-left:150px;
+margin-right:auto;
+}
+
+#text-input {
+width:525px;
+margin-left:auto;
+margin-right:auto;
+}
+
+#send-button {
+margin-left:auto;
+margin-right:auto;
+}
+</style>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<!--<script type="text/javascript" src="purl.js"></script>-->
+<script src="/nowjs/now.js"></script>
+<!--<script src="/remix/remix.js"></script>-->
+<script>
+    
+$(document).ready(function() {
+	
+    //get name + callnumber via prompt
+    $("#login").html("");
+    var name = prompt("Welcome to DisCourse!\nWhat's your name?", "Lars Lionsson");
+    var callnumber = prompt("Call number for the course you're in?", "19231");
+    initChat(name, callnumber);
+
+    //get name and callnumber via login screen
+    /*
+    var name;
+    var callnumber;
+        //now.name = name;
+
+        $("#enter-button").click(function() {
+                name = $("#name-input").val();
+                callnumber = $("#callnumber-input").val();
+                console.log(name);
+                console.log(callnumber);
+                //now.name = name;
+                initChat(name, callnumber);
+                $("#login").html("");
+        });
+
+        $(".login-input").keypress(function (e) {
+                if (e.which && e.which === 13) {
+                        $("#enter-button").click();
+                        return false;
+                }
+        });
+    */
+});
+
+function initChat(theName, theCallnumber) {
+    
+     var name = theName;
+    var callnumber = theCallnumber;
+    console.log("name: "+name+", callnumber: "+callnumber);
+    /**retrieving from ADI**/
+    //courses
+    var apikey;
+    var url;
+    var course_name;
+    var course_professor;
+    var course_location;
+    var course_enrolled;
+    var course_information;
+    var currentusers = 0;
+        //var currentpage = window.location;
+        //console.log(pathname);
+        //var callnumber = $.url(currentpage).param("callnumber");
+        //var callnumber = 74703;
+        apikey= "5131584c09109f0002e3adcd";
+        url = "http://data.adicu.com/courses?call_number="+callnumber+"&limit=1"+"&api_token="+apikey;
+
+        
+        //var url = "http://data.adicu.com/courses?call_number=74703&limit=1&api_token=5131584c09109f0002e3adcd";
+
+        /*
+        var course_name;
+        var course_professor;
+        var course_location;
+        var course_enrolled;
+        var course_information;
+        */
+
+        
+        $.getJSON(url+"&jsonp=?", null, function(courses) {
+                var theCourse = courses["data"][0];
+                course_name = theCourse["CourseTitle"];
+                course_professor = theCourse["Instructor1Name"];
+                course_location = theCourse["Building1"]+" "+theCourse["Room1"];
+                course_enrolled = theCourse["NumEnrolled"];
+                console.log("course_enrolled is " + course_enrolled);
+
+                course_information =
+                "<b>About this classroom</b><br>" +
+                "Course: " + course_name + "<br>" +
+                "Professor: " + course_professor + "<br>" +
+                "Location: " + course_location;
+
+                $("#courseinfo").html(course_information);
+
+
+                $("#usercount").html("Number of users: " + currentusers + "/" + course_enrolled);
+        });
+        
+
+        /**now actions**/
+        //now.name = prompt("What's your name?", "Lars Lionsson");
+        now.name = name;
+        $("#text-input").focus();
+
+        /**now functions**/
+       /* var remix = require('webremix');
+       var url_pattern = new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?");*/
+       
+       //var url_pattern = new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?");
+       
+       /*now.receiveMessage = function(name, message) {
+                if (url_pattern.test(message)) {
+                        $("#messages").append("<br>" + name + ": " + remix.generate(message, function(err, resp) {
+                                console.log(resp);
+                        }));
+                }
+                else {
+                        $("#messages").append("<br>" + name + ": " + message);
+                }
+                
+        }*/
+
+        
+        now.receiveMessage = function(name, message) {
+                $("#messages").append("<br><b><font color='#852600'>" + name + ":</font></b> " + message);
+		$("#messages").scrollTop(100000);
+        }
+        
+
+        now.updateNumberUsers = function(n) {
+                currentusers = n;
+		console.log(n+"users");
+                $("#usercount").html("Number of users: " + n + "/" + course_enrolled);
+        }
+
+        now.receiveServerMessage = function(message) {
+                $("#messages").append("<br>"+message);
+		$("#messages").scrollTop(100000);
+        }
+
+        $("#send-button").click(function() {
+                now.distributeMessage($("#text-input").val());
+                $("#text-input").val("");
+        });
+
+        $("#text-input").keypress(function (e) {
+                if (e.which && e.which === 13) {
+                        $("#send-button").click();
+                        return false;
+                }
+        });
+
+
+}
+
+</script>
+</head>
+
+<body>
+<div id="login">
+        <div id="login_title"></div>
+        <form action="" onsubmit="return false;">
+            Name? <input type="text" class="login-input" id="name-input" value="Lars Lionsson"><br>
+            Enter a call number: <input type="text" class="login-input" id="callnumber-input" value="74703"><br>
+            or choose from currently occurring courses:<br>
+            <input type="button" value="Enter room" id="enter-button">
+        </form>
+</div>
+<div id="top">
+        <div id="courseinfo"></div>
+        <div id="usercount"></div>
+</div>
+<div id="messages"></div>
+<div id="inputdiv">
+<input type="text" id="text-input"> 
+<input type="button" value="Send" id="send-button">
+</div>
+</body>
+</html>
