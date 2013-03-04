@@ -8,7 +8,7 @@ Made during the HackColumbia hackathon using the Courses API from data.adicu.com
 To use
 ======
 
-##In the discourse/ directory, type:
-node now_server.js
+In the discourse/ directory, type:
+'node now_server.js'
 
-##Then go to localhost:8080 in your browser.
+Then go to 'localhost:8080' in your browser.
