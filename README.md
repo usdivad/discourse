@@ -16,4 +16,4 @@ Then go to `localhost:8080` in your browser.
 Demo
 ====
 
-http://tinyurl.com/discourse-demo
+http://tinyurl.com/discourse-demo1
