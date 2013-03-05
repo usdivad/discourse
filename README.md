@@ -1,7 +1,7 @@
 DisCourse
 =========
 
-Chat anonymously with students in the same course section!
+Chat anonymously in real-time with students in the same course section! Use responsibly.
 
 Made during the HackColumbia hackathon using the Courses API from data.adicu.com. Also uses node.js, now.js, and webremix.
 
@@ -16,4 +16,4 @@ Then go to `localhost:8080` in your browser.
 Demo
 ====
 
-http://tinyurl.com/discourse-demo1
+http://tinyurl.com/discourse-demo1-short
